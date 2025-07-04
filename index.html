@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>I am The Champion</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  </head>
+  <body
+    class="h-screen w-screen p-10 flex items-center justify-center gap-10 bg-neutral-200"
+  >
+    <main class="flex flex-1 flex-col items-center justify-center gap-4">
+      <!-- header -->
+      <h1 class="font-semibold capitalize">I am the Champion</h1>
+      <p>Push with all your strength</p>
+
+      <!-- action screen -->
+      <div
+        class="size-[400px] rounded-[20px] border overflow-hidden border-blue-300"
+      >
+        <img
+          src="./images/saitama punch.jpg"
+          alt="Boxing Icon"
+          class="object-cover w-full h-full transition-all duration-500 ease-in-out"
+          id="image-action"
+        />
+      </div>
+
+      <!-- action bar -->
+      <div class="flex w-full shadow-lg rounded-[12px] overflow-hidden">
+        <!-- punch button -->
+        <button
+          id="punch-button"
+          class="h-[50px] capitalize w-full cursor-pointer bg-blue-500 text-white hover:bg-blue-600 active:bg-red-600"
+        >
+          punch
+        </button>
+
+        <!-- display score -->
+        <div
+          class="h-[50px] w-full flex items-center justify-center bg-gray-200"
+        >
+          <span id="score-display" class="text-lg font-bold">0</span>
+        </div>
+      </div>
+
+      <!-- input player name -->
+      <input
+        id="name-input"
+        type="text"
+        placeholder="Enter your name"
+        class="w-full p-2 border-2 outline-none focus:border-blue-500 border-blue-300 rounded-md"
+      />
+    </main>
+
+    <!-- leader board -->
+    <aside
+      id="leaderboard"
+      class="px-[20px] h-full py-[10px] rounded-[10px] border-2 border-red-300"
+    >
+      <h1 class="underline font-bold">Leaderboard</h1>
+      <ul id="leaderboard-list" class="list-disc pl-3"></ul>
+    </aside>
+
+    <script>
+      // Sample leaderboard data
+      const leaderboard = [
+        { name: "Alice", score: 150 },
+        { name: "Bob", score: 120 },
+        { name: "Charlie", score: 100 },
+      ];
+
+      // get leaderboard element
+      const leaderboardElement = document.getElementById("leaderboard-list");
+
+      // Populate the leaderboard with initial data
+      for (const player of leaderboard) {
+        const listElement = document.createElement("li");
+        listElement.id = `player-${player.name}`;
+        listElement.innerText = `${player.name} - ${player.score}`;
+        leaderboardElement.appendChild(listElement);
+      }
+
+      // Initialize player name
+      let playerName = "";
+      // get name input element
+      const nameInput = document.getElementById("name-input");
+      // Add event listener to get player name
+      nameInput.addEventListener("input", () => {
+        playerName = nameInput.value;
+      });
+
+      // get action elements
+      const imageAction = document.getElementById("image-action");
+      const punchButton = document.getElementById("punch-button");
+      const scoreDisplay = document.getElementById("score-display");
+
+      // Initialize score
+      let score = 0;
+
+      // Add event listener to the punch button
+      punchButton.addEventListener("click", () => {
+        // Check if player name is empty
+        if (playerName === "") {
+          alert("Please enter your name before punching!");
+          return;
+        }
+
+        // disable the punch button to prevent multiple clicks
+        punchButton.disabled = true;
+
+        // Simulate a punch action
+        const criticalHit = Math.floor(Math.random() * 100);
+        score = score + 20 + criticalHit;
+
+        // Update the image based on critical hit
+        if (criticalHit > 50) {
+          imageAction.src = "./images/saitama-vs-garou-serious-punch.webp";
+        } else {
+          imageAction.src = "./images/saitama punch.jpg";
+        }
+
+        // Add animation effect
+        imageAction.classList.add("animate-ping");
+
+        // after 1 second, reset the button and update the score
+        setTimeout(() => {
+          punchButton.disabled = false;
+          imageAction.classList.remove("animate-ping");
+
+          scoreDisplay.innerText = score;
+
+          // get your score element for the leaderboard
+          const yourScore = document.getElementById(`player-${playerName}`);
+
+          if (yourScore !== null && yourScore !== undefined) {
+            // Update existing score
+            yourScore.innerText = `${playerName} - ${score}`;
+            yourScore.classList.add("text-red-500", "font-semibold");
+          } else {
+            // Create a new score entry
+            const newScore = document.createElement("li");
+            newScore.id = `player-${playerName}`;
+            newScore.innerText = `${playerName} - ${score}`;
+            leaderboardElement.appendChild(newScore);
+          }
+        }, 1000);
+      });
+    </script>
+  </body>
+</html>
